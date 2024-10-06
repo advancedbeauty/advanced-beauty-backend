@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,8 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+}
+
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String?
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  firstName          String
+  lastName           String
+  email              String             @unique @db.String
+  phone              String?            @unique @db.String
+  avatarUrl          String?
+  hashedPassword     String             @db.String
+  role               Role               @default(USER)
+  hashedRefreshToken String?
+  emailVerification  VerificationStatus @default(UNVERIFIED)
+  phoneVerification  VerificationStatus @default(UNVERIFIED)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  reviews            Review[]
+
+  @@map("users")
+}
+
+model Review {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int      @db.Int
+  content   String?
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("reviews")
 }
