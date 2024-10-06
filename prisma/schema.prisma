@@ -34,8 +34,6 @@ model User {
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   reviews            Review[]
-
-  @@map("users")
 }
 
 model Review {
@@ -46,7 +44,4 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@map("reviews")
 }
