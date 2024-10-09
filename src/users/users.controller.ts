@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
-import { zodValidationPipe } from 'src/pipes/zodValidationPipe';
-import { userSchema, userUpdateSchema, UserZodDto, UserUpdateDto } from 'src/zod/user.zod';
+// import { zodValidationPipe } from 'src/pipes/zodValidationPipe';
+import { UserZodDto, UserUpdateDto } from 'src/zod/user.zod';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UsePipes(new zodValidationPipe(userSchema))
+  // @UsePipes(new zodValidationPipe(userSchema))
   async create(@Body() createUserDto: UserZodDto): Promise<User> {
     try {
       return await this.usersService.create(createUserDto);
@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UsePipes(new zodValidationPipe(userUpdateSchema))
+  // @UsePipes(new zodValidationPipe(userUpdateSchema))
   async update(@Param('id') id: string, @Body() updateUserDto: UserUpdateDto): Promise<User> {
     try {
       return await this.usersService.update(id, updateUserDto);
