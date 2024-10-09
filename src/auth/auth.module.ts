@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ConfigModule } from '@nestjs/config';
-import googleOauthConfig from './config/google-oauth.config';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { UserModule } from 'src/user/user.module';
+import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
-  imports: [
-    ConfigModule.forFeature(googleOauthConfig),
-    UserModule
-  ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy],
+  providers: [AuthService, UsersService, PrismaService],
 })
 export class AuthModule {}
