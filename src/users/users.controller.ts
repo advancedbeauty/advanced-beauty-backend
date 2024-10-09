@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { User } from '@prisma/client';
 import { ZodValidationPipe } from '../pipes/zodValidationPipe';
 import { userSchema, userUpdateSchema, UserZodDto, UserUpdateDto } from '../zod/user.zod';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
