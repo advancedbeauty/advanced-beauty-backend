@@ -4,9 +4,13 @@ import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { LocalStrategy } from './strategies/local.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from './config/jwt.config';
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.registerAsync(jwtConfig.asProvider())
+  ],
   controllers: [AuthController],
   providers: [AuthService, UsersService, PrismaService, LocalStrategy],
 })
