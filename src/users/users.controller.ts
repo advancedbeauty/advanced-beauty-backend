@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpS
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
 import { ZodValidationPipe } from '../pipes/zodValidationPipe';
-import { userSchema, userUpdateSchema, UserZodDto, UserUpdateDto } from 'src/zod/user.zod';
+import { userSchema, userUpdateSchema, UserZodDto, UserUpdateDto } from '../zod/user.zod';
 
 @Controller('users')
 export class UsersController {
