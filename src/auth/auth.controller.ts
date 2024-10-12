@@ -1,12 +1,15 @@
-import { Controller, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Request, Response, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
@@ -25,5 +28,17 @@ export class AuthController {
   @Post('signout')
   signOut(@Request() req) {
     this.authService.signOut(req.user.id);
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  googleLogin() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleCallback(@Request() req, @Response() res) {
+    const clientUrl = process.env.CLIENT_URL;
+    const response = await this.authService.login(req.user.id);
+    res.redirect(`${clientUrl}?token=${response.accessToken}`);
   }
 }

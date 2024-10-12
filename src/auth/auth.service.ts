@@ -8,6 +8,7 @@ import { ConfigType } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { CurrentUser } from './types/current-user';
 import { Role } from './enum/roles.enum';
+import { UserZodDto } from 'src/zod/user.zod';
 
 @Injectable()
 export class AuthService {
@@ -93,5 +94,13 @@ export class AuthService {
             role: user.role as Role,
         }
         return currentUser;
+    }
+
+    async validateGoogleUser(googleUser: UserZodDto) {
+        const user = await this.userService.findByEmail(googleUser.email);
+        if(user) {
+            return user;
+        }
+        return await this.userService.create(googleUser);
     }
 }
