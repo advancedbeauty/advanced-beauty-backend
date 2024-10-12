@@ -36,6 +36,15 @@ export class UsersService {
     return this.prisma.user.create({ data: userData });
   }
 
+  async updateHashedRefreshToken(id: string, hashedRefreshToken: string): Promise<User> {
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        hashedRefreshToken,
+      }
+    });
+  }
+
   async update(id: string, data: UserUpdateDto): Promise<User> {
     return this.prisma.user.update({
       where: { id },
