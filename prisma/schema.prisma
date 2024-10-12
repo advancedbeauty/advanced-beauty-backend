@@ -28,8 +28,8 @@ model User {
   password           String?
   role               Role               @default(USER)
   hashedRefreshToken String?
-  emailVerification  VerificationStatus @default(UNVERIFIED)
-  phoneVerification  VerificationStatus @default(UNVERIFIED)
+  isEmailVerified    VerificationStatus @default(UNVERIFIED)
+  isPhoneVerified    VerificationStatus @default(UNVERIFIED)
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 }

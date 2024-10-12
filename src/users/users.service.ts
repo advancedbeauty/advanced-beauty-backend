@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
 import { UserZodDto, UserUpdateDto } from '../zod/user.zod';
 import * as bcryptjs from 'bcryptjs';
+import { userSelect } from './select/users.select';
 
 @Injectable()
 export class UsersService {
@@ -29,8 +30,8 @@ export class UsersService {
       password: hashedPassword || null,
       role: data.role || 'USER',
       hashedRefreshToken: data.hashedRefreshToken || null,
-      emailVerification: data.emailVerification || 'UNVERIFIED',
-      phoneVerification: data.phoneVerification || 'UNVERIFIED',
+      isEmailVerified: data.isEmailVerified || 'UNVERIFIED',
+      isPhoneVerified: data.isPhoneVerified || 'UNVERIFIED',
     };
 
     return this.prisma.user.create({ data: userData });
@@ -69,12 +70,15 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: userSelect,
+    });
   }
 
   async findOne(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { id },
+      select: userSelect,
     });
   }
 

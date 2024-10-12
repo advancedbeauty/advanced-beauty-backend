@@ -4,6 +4,9 @@ import { User } from '@prisma/client';
 import { ZodValidationPipe } from '../pipes/zodValidationPipe';
 import { userSchema, userUpdateSchema, UserZodDto, UserUpdateDto } from '../zod/user.zod';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorators';
+import { Role } from '../auth/enum/roles.enum';
+import { RolesGuard } from '../auth/guards/roles/roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -35,6 +38,9 @@ export class UsersController {
     }
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<User> {
     try {

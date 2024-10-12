@@ -14,8 +14,8 @@ export const userSchema = z.object({
   password: z.string().min(8).nullable().optional(),
   role: RoleEnum.optional(),
   hashedRefreshToken: z.string().nullable().optional(),
-  emailVerification: VerificationStatusEnum.optional(),
-  phoneVerification: VerificationStatusEnum.optional(),
+  isEmailVerified: VerificationStatusEnum.optional(),
+  isPhoneVerified: VerificationStatusEnum.optional(),
 }).strict();
 
 export type UserZodDto = z.infer<typeof userSchema>;
