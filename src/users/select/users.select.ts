@@ -8,6 +8,7 @@ export const userSelect: Prisma.UserSelect = {
   phone: true,
   avatarUrl: true,
   role: true,
+  hashedRefreshToken: true,
   isEmailVerified: true,
   isPhoneVerified: true,
   createdAt: true,

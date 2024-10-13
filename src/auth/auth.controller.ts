@@ -14,20 +14,32 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user.id);
+  async login(@Request() req, @Response() res) {
+    const { id, accessToken, refreshToken } = await this.authService.login(req.user.id);
+    res.cookie('id', id, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.json ({
+      message: "Logged In",
+    })
   }
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Request() req) {
-    return this.authService.refreshToken(req.user.id);
+  async refreshToken(@Request() req, @Response() res) {
+    const { id, accessToken, refreshToken } = await this.authService.refreshToken(req.user.id);
+    res.cookie('id', id, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.json ({
+      message: "Refresh token generated"
+    })
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('signout')
-  signOut(@Request() req) {
-    this.authService.signOut(req.user.id);
+  async signOut(@Request() req) {
+    await this.authService.signOut(req.user.id);
   }
 
   @UseGuards(GoogleAuthGuard)
@@ -37,8 +49,12 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req, @Response() res) {
-    const clientUrl = process.env.CLIENT_URL;
-    const response = await this.authService.login(req.user.id);
-    res.redirect(`${clientUrl}?token=${response.accessToken}`);
+    const { id, accessToken, refreshToken } = await this.authService.login(req.user.id);
+    res.cookie('id', id, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.json ({
+      message: "Logged In"
+    })
   }
 }
