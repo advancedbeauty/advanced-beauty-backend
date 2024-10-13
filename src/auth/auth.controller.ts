@@ -15,13 +15,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Response() res) {
+    const clientUrl = process.env.CLIENT_URL;
     const { id, accessToken, refreshToken } = await this.authService.login(req.user.id);
     res.cookie('id', id, { httpOnly: true, secure: true, sameSite: 'strict' });
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-    res.json ({
-      message: "Logged In",
-    })
+    res.redirect(clientUrl);
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -38,8 +37,14 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('signout')
-  async signOut(@Request() req) {
+  async signOut(@Request() req, @Response() res) {
+    const clientUrl = process.env.CLIENT_URL;
     await this.authService.signOut(req.user.id);
+    // Clear cookies
+    res.clearCookie('id');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.redirect(clientUrl);
   }
 
   @UseGuards(GoogleAuthGuard)
@@ -49,12 +54,11 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req, @Response() res) {
+    const clientUrl = process.env.CLIENT_URL;
     const { id, accessToken, refreshToken } = await this.authService.login(req.user.id);
     res.cookie('id', id, { httpOnly: true, secure: true, sameSite: 'strict' });
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-    res.json ({
-      message: "Logged In"
-    })
+    res.redirect(clientUrl);
   }
 }
